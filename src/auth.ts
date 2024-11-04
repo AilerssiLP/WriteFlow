@@ -21,13 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         where: { id: user.id },
         data: { isOnline: true },
       });
-    },
-    async signOut({ user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { isOnline: false },
-      });
-    },
+    }, 
   },
 
   callbacks: {

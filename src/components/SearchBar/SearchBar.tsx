@@ -29,7 +29,7 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: user.id, isOnline: false }),
+        body: JSON.stringify({ id: user?.id, isOnline: false }),
       });
 
       if (!response.ok) {
@@ -44,11 +44,6 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
   };
 
   const UserOptions = [
-    // {
-    //   icon: <Bell className="w-4" />,
-    //   href: "/notifications",
-    //   label: "Notifications",
-    // },
     {
       icon: <Settings className="w-4" />,
       href: "/settings",

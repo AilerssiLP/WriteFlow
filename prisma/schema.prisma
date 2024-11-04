@@ -277,7 +277,7 @@ model Activity {
   userId    String
   action    String
   timestamp DateTime @default(now())
-  user      User     @relation("UserActivities", fields: [userId], references: [id])
+  user      User     @relation("UserActivities", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 

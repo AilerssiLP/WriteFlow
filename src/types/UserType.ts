@@ -1,6 +1,10 @@
 import { Prisma } from '@prisma/client';
 
+export type Role = "USER" | "ADMIN" | "MODERATOR";
+
 export type User = Prisma.UserGetPayload<{}> | null
+
+
 
 export type FlowUser = Prisma.UserGetPayload<{
   select : {
@@ -33,12 +37,30 @@ export type UserWithFlowsAndTagsAndAbout = Prisma.UserGetPayload<{
   }
 }> | null
 
+
 export type UserWithFollowers = Prisma.UserGetPayload<{
   include: {
     followers: {
       select: {
-        followingId: true
-      }
-    }
-  }
-}> | null
+        followingId: true;
+      };
+    };
+    role: true; 
+    name: true;
+    email: true;
+    isActive: true;
+    isOnline: true;
+  };
+}>;
+
+export type CustomUser = Prisma.UserGetPayload<{
+  include: {
+    followers: {
+      select: {
+        followingId: true;
+      };
+    };
+  };
+}> & {
+  role: Role;  
+};

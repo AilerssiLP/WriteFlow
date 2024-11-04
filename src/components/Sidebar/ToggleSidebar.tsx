@@ -26,7 +26,7 @@ export const SidebarButtonsTop = ({user}: {user: UserWithFollowers}) => {
       <LinkButton link={`/user/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
 
       {user?.role != 'USER' && (
-        <LinkButton link="/users" icon={<Settings />}>Admin Dashboard</LinkButton>
+        <LinkButton link="/admin/users" icon={<Settings />}>Admin Dashboard</LinkButton>
       )}
     </div>
   )

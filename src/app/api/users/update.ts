@@ -3,28 +3,11 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest) {
-  try {
-    const users = await prisma.user.findMany({
-      include: {
-        followers: {
-          select: {
-            followingId: true,
-          },
-        },
-      },
-    });
-    return NextResponse.json(users, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
-  }
-}
-
 export async function PUT(req: NextRequest) {
   try {
     const { userIds, role, isActive, isOnline } = await req.json();
     if (userIds && role) {
+
       await prisma.user.updateMany({
         where: {
           id: { in: userIds },
@@ -33,6 +16,7 @@ export async function PUT(req: NextRequest) {
       });
       return NextResponse.json({ message: 'Roles updated successfully.' }, { status: 200 });
     } else if (userIds && isActive !== undefined) {
+
       await prisma.user.updateMany({
         where: {
           id: { in: userIds },
@@ -50,7 +34,6 @@ export async function PUT(req: NextRequest) {
       });
       return NextResponse.json({ message: 'Online status updated successfully.' }, { status: 200 });
     } else {
-
       const { id, role, isActive, isOnline } = await req.json();
       const user = await prisma.user.update({
         where: { id },
@@ -63,4 +46,3 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
   }
 }
-
