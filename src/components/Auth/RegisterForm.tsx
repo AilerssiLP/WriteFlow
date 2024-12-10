@@ -46,18 +46,22 @@ const RegisterForm = (props: props) => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: z.infer<typeof registerFormSchema>) => {
-    setError("");
-    setSuccess("");
+const onSubmit = async (data: z.infer<typeof registerFormSchema>) => {
+  console.time("registerFormSubmit"); 
+  setError("");
+  setSuccess("");
 
-    const res = await register(data);
+  const res = await register(data);
 
-    if (res?.success) form.reset()
-    setLoadingButton(true)
-    if (res?.error) setLoadingButton(false)
-    setError(res?.error || "");
-    setSuccess(res?.success || "");
-  };
+  if (res?.success) form.reset();
+  setLoadingButton(true);
+  if (res?.error) setLoadingButton(false);
+  setError(res?.error || "");
+  setSuccess(res?.success || "");
+
+  console.timeEnd("registerFormSubmit"); 
+};
+
 
   return (
     <Card className="w-full">
@@ -73,9 +77,10 @@ const RegisterForm = (props: props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel htmlFor = "name" >Name</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid="name"
                       type="text"
                       placeholder="Enter your name..."
                       disabled={form.formState.isSubmitting || loadingButton}
@@ -91,9 +96,10 @@ const RegisterForm = (props: props) => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel htmlFor = "username">Username</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid= "username"
                       type="text"
                       placeholder="Enter your username..."
                       disabled={form.formState.isSubmitting || loadingButton}
@@ -109,9 +115,10 @@ const RegisterForm = (props: props) => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel htmlFor = "email">Email</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid= "email"
                       type="email"
                       placeholder="Enter your email..."
                       disabled={form.formState.isSubmitting || loadingButton}
@@ -127,9 +134,10 @@ const RegisterForm = (props: props) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel htmlFor = "password">Password</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid= "password"
                       type="password"
                       placeholder="Enter your password..."
                       disabled={form.formState.isSubmitting || loadingButton}

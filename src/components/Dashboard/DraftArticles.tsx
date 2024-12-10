@@ -20,6 +20,22 @@ const DraftArticles = async (props: props) => {
     console.log(e)
     return []
   })
+  /*const draftFlows: Blog[] = await prisma.blog.findMany({
+  where: {
+    userId: session.user.id,
+    isPublished: false,
+  },
+  select: {
+    id: true,
+    title: true,
+    content: true,
+  },
+  take: 100, // Pagination: Limit 100 drafts at a time
+}).catch((e) => {
+  console.log(e);
+  return [];
+});
+*/
 
   return (
     <Card className='w-full lg:w-[75%] mx-auto space-y-2 px-2 py-5'>

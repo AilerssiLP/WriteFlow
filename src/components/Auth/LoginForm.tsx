@@ -44,15 +44,19 @@ const LoginForm = (props: props) => {
   });
 
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+    console.time("loginFormSubmit"); // Začiatok merania času
     setError("");
     setSuccess("");
-
+  
     const res = await login(data);
-    setLoadingButton(true)
-    if(res?.error) setLoadingButton(false)
+    setLoadingButton(true);
+    if (res?.error) setLoadingButton(false);
     setError(res?.error || "");
     setSuccess(res?.success || "");
+  
+    console.timeEnd("loginFormSubmit"); // Koniec merania času
   };
+  
 
   return (
     <Card className="w-full">
@@ -71,6 +75,7 @@ const LoginForm = (props: props) => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid="email"
                       type="email"
                       placeholder="Enter Your Email..."
                       disabled={form.formState.isSubmitting || loadingButton}
@@ -89,6 +94,7 @@ const LoginForm = (props: props) => {
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
+                      data-testid= "password"
                       type="password"
                       placeholder="Enter Your Password..."
                       disabled={form.formState.isSubmitting || loadingButton}

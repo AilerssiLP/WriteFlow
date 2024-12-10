@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { CustomUser, Role } from "../../types/UserType";
 import { Session } from "next-auth";
 
@@ -10,7 +11,7 @@ interface UserRowProps {
   session: Session;
 }
 
-export const UserRow: React.FC<UserRowProps> = ({
+export const UserRole: React.FC<UserRowProps> = ({
   user,
   selectedUserIds,
   setSelectedUserIds,
@@ -78,13 +79,21 @@ export const UserRow: React.FC<UserRowProps> = ({
   };
 
   const confirmRoleChange = (newRole: Role) => {
-    console.log(`Confirming role change for ${user.name} to ${newRole}`);
-    setUsers((prev) =>
-      prev.map((u) => (u.id === user.id ? { ...u, role: newRole } : u))
-    );
+    console.log("Updating role for:", user.id, "to:", newRole);
+  
+    setUsers((prev) => {
+      const updatedUsers = prev.map((u) =>
+        u.id === user.id ? { ...u, role: newRole } : u
+      );
+      console.log("Updated Users:", updatedUsers);
+      return updatedUsers;
+    });
+  
     setLogs((prevLogs) => [...prevLogs, `Changed role for ${user.name} to ${newRole}`]);
+  
     setShowRoleChangeModal(false);
   };
+  
 
   const confirmToggleActiveStatus = () => {
     console.log(`Confirming status change for ${user.name}`);
@@ -170,57 +179,59 @@ export const UserRow: React.FC<UserRowProps> = ({
         </td>
       </tr>
 
-
-      {showRoleChangeModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Change Role for {user.name}</h2>
-            <div className="space-y-4">
-              {["USER", "ADMIN", "MODERATOR"].map((role) => (
-                <button
-                  key={role}
-                  onClick={() => confirmRoleChange(role as Role)}
-                  className={`px-4 py-2 text-sm rounded ${
-                    user.role === role ? "bg-gray-300 text-gray-800" : "bg-blue-500 text-white"
-                  }`}
-                  disabled={user.role === role}
-                >
-                  {role}
-                </button>
-              ))}
+      {showRoleChangeModal &&
+        ReactDOM.createPortal(
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold mb-4">Change Role for {user.name}</h2>
+              <div className="space-y-4">
+                {["USER", "ADMIN", "MODERATOR"].map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => confirmRoleChange(role as Role)}
+                    className={`px-4 py-2 text-sm rounded ${
+                      user.role === role ? "bg-gray-300 text-gray-800" : "bg-blue-500 text-white"
+                    }`}
+                    disabled={user.role === role}
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setShowRoleChangeModal(false)}
+                className="mt-6 px-4 py-2 border border-gray-300 text-gray-700 rounded bg-white"
+              >
+                Cancel
+              </button>
             </div>
-            <button
-              onClick={() => setShowRoleChangeModal(false)}
-              className="mt-6 px-4 py-2 border border-gray-300 text-gray-700 rounded bg-white"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body 
+        )}
 
-
-      {showActivationModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">
-              {user.isActive ? "Deactivate Account" : "Activate Account"} for {user.name}
-            </h2>
-            <button
-              onClick={confirmToggleActiveStatus}
-              className="px-4 py-2 bg-blue-500 text-white rounded mr-4"
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => setShowActivationModal(false)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded bg-white"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      {showActivationModal &&
+        ReactDOM.createPortal(
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold mb-4">
+                {user.isActive ? "Deactivate Account" : "Activate Account"} for {user.name}
+              </h2>
+              <button
+                onClick={confirmToggleActiveStatus}
+                className="px-4 py-2 bg-blue-500 text-white rounded mr-4"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => setShowActivationModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded bg-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>,
+          document.body 
+        )}
     </>
   );
 };

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "types": [
-      "@uploadcare/blocks/types/jsx"
+      "@uploadcare/blocks/types/jsx","@testing-library/jest-dom", "jest","vitest/globals",
     ],
     "lib": [
       "dom",

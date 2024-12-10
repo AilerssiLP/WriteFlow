@@ -131,30 +131,76 @@ export const UserRow: React.FC<UserRowProps> = ({
       setLoadingLogs(false);
     }
   };
+  const [isLoading, setIsLoading] = useState(false);
 
-  const confirmRoleChange = (newRole: Role) => {
-    if (userToEdit) {
-      console.log(`Confirming role change for ${userToEdit.name} to ${newRole}`);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userToEdit.id ? { ...u, role: newRole } : u))
+  const confirmRoleChange = async (newRole: Role) => {
+    if (session.user.id === user.id) {
+      alert("You cannot change your own role.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      console.log("Attempting to change role for:", user.id, "to", newRole);
+
+      const response = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds: [user.id], role: newRole }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change role.");
+      }
+
+      console.log("Role change successful. Updating local state.");
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === user.id ? { ...u, role: newRole } : u))
       );
-      setLogs((prevLogs) => [...prevLogs, `Changed role for ${userToEdit.name} to ${newRole}`]);
-      setShowRoleChangeModal(false);
-      setUserToEdit(null);
+    } catch (error) {
+      console.error("Failed to change role for user.", error);
+      alert("Failed to change role.");
+    } finally {
+      setIsLoading(false); 
     }
   };
+  
+  
 
-  const confirmToggleActiveStatus = () => {
+  const confirmToggleActiveStatus = async () => {
     console.log(`Confirming status change for ${user.name}`);
-    setUsers((prev) =>
-      prev.map((u) => (u.id === user.id ? { ...u, isActive: !u.isActive } : u))
-    );
-    setLogs((prevLogs) => [
-      ...prevLogs,
-      `${user.isActive ? "Deactivated" : "Activated"} account for ${user.name}`,
-    ]);
-    setShowActivationModal(false);
+    
+    try {
+      const response = await fetch('/api/users/activation', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,  
+          isActive: !user.isActive, 
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update activation status.");
+      }
+  
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, isActive: !u.isActive } : u))
+      );
+      
+      setLogs((prevLogs) => [
+        ...prevLogs,
+        `${user.isActive ? "Deactivated" : "Activated"} account for ${user.name}`,
+      ]);
+      setShowActivationModal(false);
+    } catch (error) {
+      console.error("Error updating activation status:", error);
+      alert("Failed to update activation status.");
+    }
   };
+  
 
   return (
     <>

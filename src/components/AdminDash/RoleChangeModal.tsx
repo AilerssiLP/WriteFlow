@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Role } from '../../types/UserType';
 
 interface RoleChangeModalProps {
@@ -14,7 +15,7 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  return (
+  const modalContent = (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4">Change Role for {userName}</h2>
@@ -41,4 +42,6 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
